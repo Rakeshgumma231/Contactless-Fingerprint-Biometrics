@@ -9,131 +9,149 @@ from quality_assessment import (
     calculate_composite_score,
     quality_gate
 )
+image_paths = [
+    "data/good/good1.jpg",
+    "data/good/good2.jpg",
+    "data/good/good3.jpg",
+    "data/good/good4.jpg",
+    "data/good/good5.jpg",
 
-# Image Path
-# Change extension if your image is .png
-image_path = "../data/good/sample.jpeg"
+    "data/blurry/blur1.jpg",
+    "data/blurry/blur2.jpg",
+    "data/blurry/blur3.jpg",
+    "data/blurry/blur4.jpg",
+    "data/blurry/blur5.jpg",
 
-# Read Image
-image = cv2.imread(image_path)
+    "data/dark/dark1.jpg",
+    "data/dark/dark2.jpg",
+    "data/dark/dark3.jpg",
+    "data/dark/dark4.jpg",
+    "data/dark/dark5.jpg",
 
-# Check whether image loaded successfully
-if image is None:
-    print(f"Error: Could not load image from {image_path}")
-    exit()
+    "data/glare/glare1.jpg",
+    "data/glare/glare2.jpg",
+    "data/glare/glare3.jpg",
+    "data/glare/glare4.jpg",
+    "data/glare/glare5.jpg",
+]
+for image_path in image_paths:
 
-# ---------------------------------------------------
-# Blur Detection
-# ---------------------------------------------------
+    print(f"\n{'=' * 60}")
+    print(f"Testing: {image_path}")
+    print(f"{'=' * 60}")
 
-blur_result = check_blur(image)
+    image = cv2.imread(image_path)
 
-print("\n==============================")
-print("      BLUR DETECTION")
-print("==============================")
+    if image is None:
+        print(f"Error: Could not load image from {image_path}")
+        continue
 
-print(f"Blur Score         : {blur_result['blur_score']}")
-print(f"Is Blurry          : {blur_result['is_blurry']}")
-print(f"Processing Time    : {blur_result['processing_time_ms']} ms")
+    # ---------------------------------------------------
+    # Blur Detection
+    # ---------------------------------------------------
 
+    blur_result = check_blur(image)
 
-# ---------------------------------------------------
-# Brightness Detection
-# ---------------------------------------------------
+    print("\n==============================")
+    print("      BLUR DETECTION")
+    print("==============================")
 
-brightness_result = check_brightness(image)
+    print(f"Blur Score         : {blur_result['blur_score']}")
+    print(f"Is Blurry          : {blur_result['is_blurry']}")
+    print(f"Processing Time    : {blur_result['processing_time_ms']} ms")
 
-print("\n==============================")
-print("   BRIGHTNESS DETECTION")
-print("==============================")
+    # ---------------------------------------------------
+    # Brightness Detection
+    # ---------------------------------------------------
 
-print(f"Brightness         : {brightness_result['brightness']}")
-print(f"Too Dark           : {brightness_result['too_dark']}")
-print(f"Too Bright         : {brightness_result['too_bright']}")
-print(f"Processing Time    : {brightness_result['processing_time_ms']} ms")
+    brightness_result = check_brightness(image)
 
+    print("\n==============================")
+    print("   BRIGHTNESS DETECTION")
+    print("==============================")
 
-# ---------------------------------------------------
-# Glare Detection
-# ---------------------------------------------------
+    print(f"Brightness         : {brightness_result['brightness']}")
+    print(f"Too Dark           : {brightness_result['too_dark']}")
+    print(f"Too Bright         : {brightness_result['too_bright']}")
+    print(f"Processing Time    : {brightness_result['processing_time_ms']} ms")
 
-glare_result = check_glare(image)
+    # ---------------------------------------------------
+    # Glare Detection
+    # ---------------------------------------------------
 
-print("\n==============================")
-print("      GLARE DETECTION")
-print("==============================")
+    glare_result = check_glare(image)
 
-print(f"Glare Percentage   : {glare_result['glare_percentage']}%")
-print(f"Has Glare          : {glare_result['has_glare']}")
-print(f"Processing Time    : {glare_result['processing_time_ms']} ms")
+    print("\n==============================")
+    print("      GLARE DETECTION")
+    print("==============================")
 
-# ---------------------------------------------------
-# ROI Completeness
-# ---------------------------------------------------
+    print(f"Glare Percentage   : {glare_result['glare_percentage']}%")
+    print(f"Has Glare          : {glare_result['has_glare']}")
+    print(f"Processing Time    : {glare_result['processing_time_ms']} ms")
 
-roi_result = check_roi_completeness(image)
+    # ---------------------------------------------------
+    # ROI Completeness
+    # ---------------------------------------------------
 
-print("\n==============================")
-print("   ROI COMPLETENESS")
-print("==============================")
+    roi_result = check_roi_completeness(image)
 
-print(f"ROI Percentage     : {roi_result['roi_percentage']}%")
-print(f"ROI Complete       : {roi_result['roi_complete']}")
-print(f"Processing Time    : {roi_result['processing_time_ms']} ms")
+    print("\n==============================")
+    print("   ROI COMPLETENESS")
+    print("==============================")
 
+    print(f"ROI Percentage     : {roi_result['roi_percentage']}%")
+    print(f"ROI Complete       : {roi_result['roi_complete']}")
+    print(f"Processing Time    : {roi_result['processing_time_ms']} ms")
 
-# ---------------------------------------------------
-# Ridge Clarity
-# ---------------------------------------------------
+    # ---------------------------------------------------
+    # Ridge Clarity
+    # ---------------------------------------------------
 
-ridge_result = check_ridge_clarity(image)
+    ridge_result = check_ridge_clarity(image)
 
-print("\n==============================")
-print("   RIDGE CLARITY")
-print("==============================")
+    print("\n==============================")
+    print("   RIDGE CLARITY")
+    print("==============================")
 
-print(f"Ridge Score        : {ridge_result['ridge_score']}")
-print(f"Ridge Clear        : {ridge_result['ridge_clear']}")
-print(f"Processing Time    : {ridge_result['processing_time_ms']} ms")
+    print(f"Ridge Score        : {ridge_result['ridge_score']}")
+    print(f"Ridge Clear        : {ridge_result['ridge_clear']}")
+    print(f"Processing Time    : {ridge_result['processing_time_ms']} ms")
 
-# ---------------------------------------------------
-# Composite Quality Score
-# ---------------------------------------------------
+    # ---------------------------------------------------
+    # Composite Quality Score
+    # ---------------------------------------------------
 
-composite_result = calculate_composite_score(
-    blur_result,
-    brightness_result,
-    glare_result,
-    roi_result,
-    ridge_result
-)
+    composite_result = calculate_composite_score(
+        blur_result,
+        brightness_result,
+        glare_result,
+        roi_result,
+        ridge_result
+    )
 
-print("\n==============================")
-print("   COMPOSITE QUALITY SCORE")
-print("==============================")
+    print("\n==============================")
+    print("   COMPOSITE QUALITY SCORE")
+    print("==============================")
 
-print(f"Quality Score      : {composite_result['quality_score']}/{composite_result['max_score']}")
+    print(f"Quality Score      : {composite_result['quality_score']}/{composite_result['max_score']}")
 
+    # ---------------------------------------------------
+    # Quality Gate
+    # ---------------------------------------------------
 
-# ---------------------------------------------------
-# Quality Gate
-# ---------------------------------------------------
+    quality_result = quality_gate(
+        blur_result,
+        brightness_result,
+        glare_result,
+        roi_result,
+        ridge_result,
+        composite_result
+    )
 
-quality_result = quality_gate(
-    blur_result,
-    brightness_result,
-    glare_result,
-    roi_result,
-    ridge_result,
-    composite_result
-)
+    print("\n==============================")
+    print("   QUALITY GATE")
+    print("==============================")
 
-print("\n==============================")
-print("   QUALITY GATE")
-print("==============================")
-
-print(f"Decision           : {quality_result['decision']}")
-print(f"Reasons            : {', '.join(quality_result['reasons'])}")
-print(f"Suggestions        : {', '.join(quality_result['suggestions'])}")
-
-
+    print(f"Decision           : {quality_result['decision']}")
+    print(f"Reasons            : {', '.join(quality_result['reasons'])}")
+    print(f"Suggestions        : {', '.join(quality_result['suggestions'])}")

@@ -232,37 +232,7 @@ if uploaded_file is not None:
 
         st.success("No suggestions. Image quality is good.")
 
-    # ==========================================
-    # REASONS
-    # ==========================================
-
-    st.subheader("Reasons")
-
-    if quality_result["reasons"]:
-
-        for reason in quality_result["reasons"]:
-
-            st.write(f"• {reason}")
-
-    else:
-
-        st.success("No quality issues detected.")
-
-    # ==========================================
-    # SUGGESTIONS
-    # ==========================================
-
-    st.subheader("Suggestions")
-
-    if quality_result["suggestions"]:
-
-        for suggestion in quality_result["suggestions"]:
-
-            st.write(f"• {suggestion}")
-
-    else:
-
-        st.success("No suggestions. Image quality is good.")
+    
 
 st.divider()
 
