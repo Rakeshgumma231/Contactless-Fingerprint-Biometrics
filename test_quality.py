@@ -4,7 +4,8 @@ from quality_assessment import (
     check_blur,
     check_brightness,
     check_glare,
-    check_roi_completeness
+    check_roi_completeness,
+    check_ridge_clarity
 )
 
 # Image Path
@@ -77,3 +78,19 @@ print("==============================")
 print(f"ROI Percentage     : {roi_result['roi_percentage']}%")
 print(f"ROI Complete       : {roi_result['roi_complete']}")
 print(f"Processing Time    : {roi_result['processing_time_ms']} ms")
+
+
+# ---------------------------------------------------
+# Ridge Clarity
+# ---------------------------------------------------
+
+ridge_result = check_ridge_clarity(image)
+
+print("\n==============================")
+print("   RIDGE CLARITY")
+print("==============================")
+
+print(f"Ridge Score        : {ridge_result['ridge_score']}")
+print(f"Ridge Clear        : {ridge_result['ridge_clear']}")
+print(f"Processing Time    : {ridge_result['processing_time_ms']} ms")
+

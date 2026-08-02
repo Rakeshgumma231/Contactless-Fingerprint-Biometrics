@@ -192,3 +192,51 @@ def check_roi_completeness(image_bgr, min_roi_percentage=30.0):
             2
         )
     }
+
+# =====================================================
+# Ridge Clarity
+# =====================================================
+
+def check_ridge_clarity(image_bgr, threshold=25.0):
+    """
+    Estimate fingerprint ridge clarity using Sobel gradients.
+    """
+
+    start_time = time.perf_counter()
+
+    gray = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2GRAY)
+
+    sobel_x = cv2.Sobel(
+        gray,
+        cv2.CV_64F,
+        1,
+        0,
+        ksize=3
+    )
+
+    sobel_y = cv2.Sobel(
+        gray,
+        cv2.CV_64F,
+        0,
+        1,
+        ksize=3
+    )
+
+    gradient = cv2.magnitude(
+        sobel_x,
+        sobel_y
+    )
+
+    ridge_score = gradient.mean()
+
+    end_time = time.perf_counter()
+
+    processing_time = (
+        end_time - start_time
+    ) * 1000
+
+    return {
+        "ridge_score": round(float(ridge_score), 2),
+        "ridge_clear": ridge_score >= threshold,
+        "processing_time_ms": round(processing_time, 2)
+    }
