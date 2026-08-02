@@ -129,23 +129,36 @@ def check_glare(image_bgr, glare_threshold=240, max_glare_percentage=5.0):
     }
 
 # =====================================================
-# ROI Completeness
+# ROI Completeness (Improved)
 # =====================================================
 
 def check_roi_completeness(image_bgr, min_roi_percentage=30.0):
     """
-    Estimate fingerprint ROI completeness.
+    Estimate fingerprint ROI completeness using contour detection.
     """
 
     start_time = time.perf_counter()
 
     gray = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2GRAY)
 
+    # Reduce noise
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # Automatic threshold
     _, binary = cv2.threshold(
-        gray,
-        50,
+        blurred,
+        0,
         255,
-        cv2.THRESH_BINARY
+        cv2.THRESH_BINARY + cv2.THRESH_OTSU
+    )
+
+    # Remove small holes
+    kernel = np.ones((5, 5), np.uint8)
+
+    binary = cv2.morphologyEx(
+        binary,
+        cv2.MORPH_CLOSE,
+        kernel
     )
 
     contours, _ = cv2.findContours(
@@ -154,18 +167,16 @@ def check_roi_completeness(image_bgr, min_roi_percentage=30.0):
         cv2.CHAIN_APPROX_SIMPLE
     )
 
-    if len(contours) == 0:
+    if not contours:
         return {
             "roi_percentage": 0.0,
             "roi_complete": False,
-            "processing_time_ms": 0
+            "processing_time_ms": 0.0
         }
 
     largest = max(contours, key=cv2.contourArea)
 
-    x, y, w, h = cv2.boundingRect(largest)
-
-    roi_area = w * h
+    roi_area = cv2.contourArea(largest)
 
     image_area = image_bgr.shape[0] * image_bgr.shape[1]
 
@@ -173,10 +184,11 @@ def check_roi_completeness(image_bgr, min_roi_percentage=30.0):
 
     end_time = time.perf_counter()
 
-    processing_time = (end_time - start_time) * 1000
-
     return {
         "roi_percentage": round(float(roi_percentage), 2),
         "roi_complete": roi_percentage >= min_roi_percentage,
-        "processing_time_ms": round(processing_time, 2)
+        "processing_time_ms": round(
+            (end_time - start_time) * 1000,
+            2
+        )
     }
