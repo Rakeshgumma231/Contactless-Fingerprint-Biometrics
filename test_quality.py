@@ -2,7 +2,9 @@ import cv2
 
 from quality_assessment import (
     check_blur,
-    check_brightness
+    check_brightness,
+    check_glare,
+    check_roi_completeness
 )
 
 # Image Path
@@ -47,3 +49,31 @@ print(f"Too Dark           : {brightness_result['too_dark']}")
 print(f"Too Bright         : {brightness_result['too_bright']}")
 print(f"Processing Time    : {brightness_result['processing_time_ms']} ms")
 
+
+# ---------------------------------------------------
+# Glare Detection
+# ---------------------------------------------------
+
+glare_result = check_glare(image)
+
+print("\n==============================")
+print("      GLARE DETECTION")
+print("==============================")
+
+print(f"Glare Percentage   : {glare_result['glare_percentage']}%")
+print(f"Has Glare          : {glare_result['has_glare']}")
+print(f"Processing Time    : {glare_result['processing_time_ms']} ms")
+
+# ---------------------------------------------------
+# ROI Completeness
+# ---------------------------------------------------
+
+roi_result = check_roi_completeness(image)
+
+print("\n==============================")
+print("   ROI COMPLETENESS")
+print("==============================")
+
+print(f"ROI Percentage     : {roi_result['roi_percentage']}%")
+print(f"ROI Complete       : {roi_result['roi_complete']}")
+print(f"Processing Time    : {roi_result['processing_time_ms']} ms")
