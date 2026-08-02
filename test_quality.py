@@ -5,7 +5,9 @@ from quality_assessment import (
     check_brightness,
     check_glare,
     check_roi_completeness,
-    check_ridge_clarity
+    check_ridge_clarity,
+    calculate_composite_score,
+    quality_gate
 )
 
 # Image Path
@@ -93,4 +95,45 @@ print("==============================")
 print(f"Ridge Score        : {ridge_result['ridge_score']}")
 print(f"Ridge Clear        : {ridge_result['ridge_clear']}")
 print(f"Processing Time    : {ridge_result['processing_time_ms']} ms")
+
+# ---------------------------------------------------
+# Composite Quality Score
+# ---------------------------------------------------
+
+composite_result = calculate_composite_score(
+    blur_result,
+    brightness_result,
+    glare_result,
+    roi_result,
+    ridge_result
+)
+
+print("\n==============================")
+print("   COMPOSITE QUALITY SCORE")
+print("==============================")
+
+print(f"Quality Score      : {composite_result['quality_score']}/{composite_result['max_score']}")
+
+
+# ---------------------------------------------------
+# Quality Gate
+# ---------------------------------------------------
+
+quality_result = quality_gate(
+    blur_result,
+    brightness_result,
+    glare_result,
+    roi_result,
+    ridge_result,
+    composite_result
+)
+
+print("\n==============================")
+print("   QUALITY GATE")
+print("==============================")
+
+print(f"Decision           : {quality_result['decision']}")
+print(f"Reasons            : {', '.join(quality_result['reasons'])}")
+print(f"Suggestions        : {', '.join(quality_result['suggestions'])}")
+
 

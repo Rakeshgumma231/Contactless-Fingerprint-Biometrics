@@ -240,3 +240,108 @@ def check_ridge_clarity(image_bgr, threshold=25.0):
         "ridge_clear": ridge_score >= threshold,
         "processing_time_ms": round(processing_time, 2)
     }
+
+# =====================================================
+# Composite Quality Score
+# =====================================================
+
+def calculate_composite_score(
+    blur_result,
+    brightness_result,
+    glare_result,
+    roi_result,
+    ridge_result
+):
+    """
+    Calculate overall fingerprint quality score.
+    """
+
+    score = 0
+
+    # Blur (30)
+    if not blur_result["is_blurry"]:
+        score += 30
+
+    # Brightness (15)
+    if (
+        not brightness_result["too_dark"]
+        and
+        not brightness_result["too_bright"]
+    ):
+        score += 15
+
+    # Glare (10)
+    if not glare_result["has_glare"]:
+        score += 10
+
+    # ROI (20)
+    if roi_result["roi_complete"]:
+        score += 20
+
+    # Ridge (25)
+    if ridge_result["ridge_clear"]:
+        score += 25
+
+    return {
+        "quality_score": score,
+        "max_score": 100
+    }
+
+# =====================================================
+# Quality Gate
+# =====================================================
+
+def quality_gate(
+    blur_result,
+    brightness_result,
+    glare_result,
+    roi_result,
+    ridge_result,
+    composite_result
+):
+    """
+    Final decision based on all quality metrics.
+    """
+
+    reasons = []
+    suggestions = []
+
+    if blur_result["is_blurry"]:
+        reasons.append("Image is blurry")
+        suggestions.append("Hold the camera steady and improve focus.")
+
+    if brightness_result["too_dark"]:
+        reasons.append("Image is too dark")
+        suggestions.append("Increase lighting while capturing.")
+
+    if brightness_result["too_bright"]:
+        reasons.append("Image is too bright")
+        suggestions.append("Reduce lighting or avoid direct light.")
+
+    if glare_result["has_glare"]:
+        reasons.append("Glare detected")
+        suggestions.append("Tilt the finger slightly to reduce reflections.")
+
+    if not roi_result["roi_complete"]:
+        reasons.append("Fingerprint area is incomplete")
+        suggestions.append("Capture the entire fingerprint inside the frame.")
+
+    if not ridge_result["ridge_clear"]:
+        reasons.append("Poor ridge clarity")
+        suggestions.append("Move closer and ensure the fingerprint is in focus.")
+
+    score = composite_result["quality_score"]
+
+    if score >= 80:
+        decision = "PASS"
+    elif score >= 60:
+        decision = "ACCEPTABLE"
+    else:
+        decision = "FAIL"
+
+    return {
+        "decision": decision,
+        "quality_score": score,
+        "reasons": reasons,
+        "suggestions": suggestions
+    }
